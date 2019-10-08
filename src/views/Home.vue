@@ -1,18 +1,24 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="home container">
+    <component v-bind:is="currentView"/>
+    <Alert/>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import { mapState } from 'vuex'
+import Alert from '@/components/Alert.vue'
 
 export default {
   name: 'home',
   components: {
-    HelloWorld
+    Alert
+  },
+  computed: {
+    ...mapState(['robotState']),
+    currentView: function () {
+      return this.robotState
+    }
   }
 }
 </script>
