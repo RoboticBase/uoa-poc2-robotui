@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { getRobotState } from '@/rest'
+import Mqtt from '@/mqtt'
 
 Vue.use(Vuex)
 
@@ -10,7 +11,12 @@ export default new Vuex.Store({
     restEndpoint: '',
     restToken: '',
     restPrefix: '/controller',
+    mqttEndpoint: '',
+    mqttUsername: '',
+    mqttPassword: '',
+    robotType: 'robot_ui',
     robotId: '',
+    uiId: '',
     message: '',
     variant: ''
   },
@@ -26,7 +32,12 @@ export default new Vuex.Store({
       state.restEndpoint = params.restEndpoint
       state.restToken = params.restToken
       state.restPrefix = params.restPrefix
+      state.mqttEndpoint = params.mqttEndpoint
+      state.mqttUsername = params.mqttUsername
+      state.mqttPassword = params.mqttPassword
+      state.robotType = params.robotType
       state.robotId = params.robotId
+      state.uiId = params.uiId
     },
     save (state) {
       localStorage.setItem('store', JSON.stringify(state))
@@ -43,9 +54,11 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    connectAction ({commit, state}, params) {
+    saveAction ({commit}, params) {
       commit('updateConfig', params)
       commit('save')
+    },
+    getInitialStateAction ({commit, state}) {
       getRobotState(state.restEndpoint, state.restPrefix, state.restToken, state.robotId).then(res => {
         if (res.result == 'success') {
           commit('updateRobotState', {robotState: res.data.state})
@@ -53,6 +66,15 @@ export default new Vuex.Store({
         else {
           commit('updateMessage', {message: 'error when retrieving robot state', variant: 'danger'})
         }
+      })
+    },
+    connectMQTTAction ({commit, state}) {
+      const cmdTopic = '/' + state.robotType + '/' + state.uiId + '/cmd'
+      const cmdexeTopic = '/' + state.robotType + '/' + state.uiId + '/cmdexe'
+      const mqtt = new Mqtt(state.mqttEndpoint, state.mqttUsername, state.mqttPassword)
+      mqtt.subscribeCmd(cmdTopic, (message) => {
+        commit('updateRobotState', {robotState: message.send_state.state})
+        mqtt.publishCmdexe(cmdexeTopic, message)
       })
     },
   },
