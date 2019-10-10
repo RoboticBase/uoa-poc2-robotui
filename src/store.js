@@ -18,7 +18,8 @@ export default new Vuex.Store({
     robotId: '',
     uiId: '',
     message: '',
-    variant: ''
+    variant: '',
+    mqttClient: null
   },
   mutations: {
     updateRobotState (state, params) {
@@ -52,6 +53,12 @@ export default new Vuex.Store({
         }
       }
     },
+    setMQTTClient (state, mqttClient) {
+      state.mqttClient = mqttClient
+    },
+    removeMQTTClient (state) {
+      state.mqttClient = null
+    },
   },
   actions: {
     saveAction ({commit}, params) {
@@ -68,14 +75,24 @@ export default new Vuex.Store({
         }
       })
     },
-    connectMQTTAction ({commit, state}) {
+    connectAction ({commit, dispatch, state}) {
       const cmdTopic = '/' + state.robotType + '/' + state.uiId + '/cmd'
       const cmdexeTopic = '/' + state.robotType + '/' + state.uiId + '/cmdexe'
-      const mqtt = new Mqtt(state.mqttEndpoint, state.mqttUsername, state.mqttPassword)
-      mqtt.subscribeCmd(cmdTopic, (message) => {
-        commit('updateRobotState', {robotState: message.send_state.state})
-        mqtt.publishCmdexe(cmdexeTopic, message)
+      const mqttClient = new Mqtt(state.mqttEndpoint, state.mqttUsername, state.mqttPassword)
+      commit('setMQTTClient', mqttClient)
+      mqttClient.connect(() => {
+        mqttClient.subscribeCmd(cmdTopic, (message) => {
+          commit('updateRobotState', {robotState: message.send_state.state})
+          mqttClient.publishCmdexe(cmdexeTopic, message)
+        })
+        dispatch('getInitialStateAction')
       })
+    },
+    disconnectAction ({commit, state}) {
+      if (state.mqttClient.disconnect()) {
+        commit('removeMQTTClient')
+        commit('updateRobotState', {robotState: 'initial'})
+      }
     },
   },
   getters: {

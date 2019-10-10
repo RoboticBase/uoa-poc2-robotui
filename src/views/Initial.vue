@@ -1,6 +1,8 @@
 <template>
   <div class="initial">
-    <h3>接続設定</h3>
+    <div class="page-header">
+      <h3>接続設定</h3>
+    </div>
     <div class="form-group">
       <label for="restEndpoint" class="float-left">REST Endpoint</label>
       <input type="text" id="restEndpoint" class="form-control" placeholder="http(s)://xxx.xxx.xxx.xxx/" v-model="params.restEndpoint"/>
@@ -45,7 +47,7 @@
 
     <div class="row form-group">
       <div class="col-sm-12">
-        <button class="btn btn-primary float-left" @click="connect">接続</button>
+        <button class="btn btn-primary float-center" @click="connect">接続</button>
       </div>
     </div>
   </div>
@@ -73,12 +75,19 @@ export default {
     this.params.uiId = this.$store.state.uiId
   },
   methods: {
-    ...mapActions(['saveAction', 'getInitialStateAction', 'connectMQTTAction']),
+    ...mapActions(['saveAction', 'connectAction']),
     connect () {
       this.saveAction(this.params)
-      this.getInitialStateAction()
-      this.connectMQTTAction()
+      this.connectAction()
     },
   },
 }
 </script>
+
+<style>
+.page-header {
+  padding-bottom: 9px;
+  margin: 40px 0 20px;
+  border-bottom: 1px solid #eee;
+}
+</style>
