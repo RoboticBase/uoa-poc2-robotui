@@ -7,7 +7,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import Alert from '@/components/Alert.vue'
+import Alert from '@/components/Alert'
 
 export default {
   name: 'home',
