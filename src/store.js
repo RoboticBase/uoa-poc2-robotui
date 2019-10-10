@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { getRobotState } from '@/rest'
+import { getRobotState, patchMoveNext } from '@/rest'
 import Mqtt from '@/mqtt'
 
 Vue.use(Vuex)
@@ -95,6 +95,15 @@ export default new Vuex.Store({
         commit('removeMQTTClient')
         commit('updateRobotState', {robotState: 'initial'})
       }
+    },
+    moveNextAction ({commit, state}) {
+      commit('updateMessage', {message: '通信中', variant: 'info'})
+      patchMoveNext(state.restEndpoint, state.restPrefix, state.restToken, state.robotId).then(res => {
+        if (res.result != 'success') {
+          const variant = res.result == 'warning' ? 'warning' : 'danger'
+          commit('updateMessage', {message: res.message, variant: variant})
+        }
+      })
     },
   },
   getters: {
