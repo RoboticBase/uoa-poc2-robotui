@@ -1,23 +1,29 @@
 <template>
   <div class="touchButton container">
-    <div class="row form-group">
-      <div class="col-sm-12 align-self-end">
-        <button type="submit" class="btn btn-outline-secondary btn-block btn-lg touchButton"
-          @click="click" ontouchstart="">
-          {{ buttonText }}
-        </button>
-      </div>
-      <audio id="click_se" preload="auto" ref="click_se">
-        <source src="/static/sounds/se_maoudamashii_system38.mp3" type="audio/mp3"/>
-      </audio>
+    <div class="form-group">
+      <button type="submit" class="btn btn-outline-secondary btn-block btn-lg touchButton" :style="styles"
+        @click="click" ontouchstart="" :disabled="buttonDisabled">
+        {{ buttonText }}
+      </button>
     </div>
+    <audio id="click_se" preload="auto" ref="click_se">
+      <source src="/static/sounds/se_maoudamashii_system38.mp3" type="audio/mp3"/>
+    </audio>
   </div>
 </template>
 
 <script>
 export default {
   name: 'touchButton',
-  props: ['buttonText'],
+  props: ['buttonText', 'height', 'fontSize', 'buttonDisabled'],
+  computed: {
+    styles () {
+      return {
+        '--height': this.height,
+        '--fontSize': this.fontSize,
+      }
+    },
+  },
   methods: {
     click() {
       let click_se = this.$refs.click_se
@@ -32,11 +38,14 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .touchButton {
-  height: 400px;
+  --height: 400px;
+  --fontSize: 200px;
+
+  height: var(--height);
   font-weight: 700;
-  font-size: 200px;
+  font-size: var(--fontSize);
 }
 .touchButton:hover {
   color: #6c757d;
