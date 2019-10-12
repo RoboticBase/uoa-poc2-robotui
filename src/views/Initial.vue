@@ -55,6 +55,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import speak from '@/speak'
 
 export default {
   name: 'Initial',
@@ -78,6 +79,7 @@ export default {
     ...mapActions(['saveAction', 'connectAction']),
     connect () {
       this.saveAction(this.params)
+      speak('hack', 0) // iOSは一度ユーザーアクションで発話させておかないと、自動発話させることができない
       this.connectAction()
     },
   },

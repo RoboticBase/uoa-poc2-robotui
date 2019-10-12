@@ -8,12 +8,21 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import Header from '@/components/Header'
+import speak from '@/speak'
 
 export default {
   name: 'standby',
   components: {
     Header
-  }
+  },
+  computed: {
+    ...mapState(['destination'])
+  },
+  mounted: function () {
+    const utterance = this.destination + 'に到着しました。待機します。'
+    speak(utterance)
+  },
 }
 </script>

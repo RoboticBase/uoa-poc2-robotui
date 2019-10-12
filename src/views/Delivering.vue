@@ -26,6 +26,7 @@ import { mapState, mapActions } from 'vuex'
 import Header from '@/components/Header'
 import TouchButton from '@/components/TouchButton'
 import QRReader from '@/components/QRReader'
+import speak from '@/speak'
 
 export default {
   name: 'delivering',
@@ -43,10 +44,16 @@ export default {
   computed: {
     ...mapState(['destination'])
   },
+  mounted: function () {
+    const utterance = '品物をお届けにまいりました。QRコードをご準備ください。'
+    speak(utterance)
+  },
   methods: {
     ...mapActions(['moveNextAction']),
     qrCodeDetected (code) {
       console.log('detect QR code', code)
+      const utterance = 'お客様を認識しました。品物をお受け取りください。品物を受け取ったら、受け取りボタンを押してください。'
+      speak(utterance)
       this.buttonDisabled = false
       this.msg = '品物を受け取ったら、受取ボタンを押してください'
     },

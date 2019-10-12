@@ -13,14 +13,19 @@
 <script>
 import { mapState } from 'vuex'
 import Header from '@/components/Header'
+import speak from '@/speak'
 
 export default {
   name: 'moving',
+  components: {
+    Header,
+  },
   computed: {
     ...mapState(['destination'])
   },
-  components: {
-    Header
+  mounted: function () {
+    const utterance = this.destination + 'へ移動します。'
+    speak(utterance)
   },
 }
 </script>

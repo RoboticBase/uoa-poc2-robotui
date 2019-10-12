@@ -22,15 +22,20 @@
 import { mapState, mapActions } from 'vuex'
 import Header from '@/components/Header'
 import TouchButton from '@/components/TouchButton'
+import speak from '@/speak'
 
 export default {
   name: 'moving',
   components: {
     Header,
-    TouchButton
+    TouchButton,
   },
   computed: {
     ...mapState(['destination'])
+  },
+  mounted: function () {
+    const utterance = this.destination + 'に到着しました。指定された品物を積み込んでください。'
+    speak(utterance)
   },
   methods: {
     ...mapActions(['moveNextAction'])
