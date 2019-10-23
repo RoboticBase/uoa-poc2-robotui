@@ -1,4 +1,4 @@
-# uoa-poc2-robotux
+# uoa-poc2-robotui
 
 ## Project setup
 ```
