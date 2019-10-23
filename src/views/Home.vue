@@ -15,8 +15,11 @@ export default {
     Alert
   },
   computed: {
-    ...mapState(['robotState']),
+    ...mapState(['robotState', 'modelSelected']),
     currentView: function () {
+      if (this.modelSelected === 'warehouse' && this.robotState === 'delivering') {
+        return 'picking'
+      }
       return this.robotState
     }
   }

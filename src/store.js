@@ -20,7 +20,8 @@ export default new Vuex.Store({
     message: '',
     variant: '',
     destination: '',
-    mqttClient: null
+    mqttClient: null,
+    modelSelected: 'order'
   },
   mutations: {
     updateMessage(state, params) {
@@ -37,6 +38,7 @@ export default new Vuex.Store({
       state.robotType = params.robotType
       state.robotId = params.robotId
       state.uiId = params.uiId
+      state.modelSelected = params.modelSelected
     },
     save (state) {
       localStorage.setItem('store', JSON.stringify(state))
