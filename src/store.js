@@ -79,7 +79,7 @@ export default new Vuex.Store({
         }
       })
     },
-    connectAction ({commit, dispatch, state}) {
+    connectAction ({commit, dispatch, state}, cb) {
       const cmdTopic = '/' + state.robotType + '/' + state.uiId + '/cmd'
       const cmdexeTopic = '/' + state.robotType + '/' + state.uiId + '/cmdexe'
       const mqttClient = new Mqtt(state.mqttEndpoint, state.mqttUsername, state.mqttPassword)
@@ -90,6 +90,7 @@ export default new Vuex.Store({
           mqttClient.publishCmdexe(cmdexeTopic, message)
         })
         dispatch('getInitialStateAction')
+        cb()
       })
     },
     disconnectAction ({commit, state}) {
@@ -98,13 +99,14 @@ export default new Vuex.Store({
         commit('updateRobotState', {robotState: 'initial'})
       }
     },
-    moveNextAction ({commit, state}) {
+    moveNextAction ({commit, state}, cb) {
       commit('updateMessage', {message: '通信中', variant: 'info'})
       patchMoveNext(state.restEndpoint, state.restPrefix, state.restToken, state.robotId).then(res => {
         if (res.result != 'success') {
           const variant = res.result == 'warning' ? 'warning' : 'danger'
           commit('updateMessage', {message: res.message, variant: variant})
         }
+        cb()
       })
     },
   },

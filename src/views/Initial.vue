@@ -60,7 +60,12 @@
 
     <div class="row form-group">
       <div class="col-sm-12">
-        <button class="btn btn-primary float-center" @click="connect">接続</button>
+        <div v-if="processing">
+          <mark>接続処理中</mark>
+        </div>
+        <div v-else>
+          <button class="btn btn-primary float-center" @click="connect">接続</button>
+        </div>
       </div>
     </div>
   </div>
@@ -78,7 +83,8 @@ export default {
       options: [
         { text: '注文配送', value: 'order' },
         { text: '倉庫間移動', value: 'warehouse' }
-      ]
+      ],
+      processing: false,
     }
   },
   beforeMount () {
@@ -96,9 +102,13 @@ export default {
   methods: {
     ...mapActions(['saveAction', 'connectAction']),
     connect () {
+      if (this.processing) return
+      this.processing = true
       this.saveAction(this.params)
       speak('hack', 0) // iOSは一度ユーザーアクションで発話させておかないと、自動発話させることができない
-      this.connectAction()
+      this.connectAction(() => {
+        this.processing = false
+      })
     },
   },
 }
