@@ -21,7 +21,8 @@ export default new Vuex.Store({
     variant: '',
     destination: '',
     mqttClient: null,
-    modelSelected: 'order'
+    modelSelected: 'order',
+    isInitialStateCalled: false
   },
   mutations: {
     updateMessage(state, params) {
@@ -63,8 +64,17 @@ export default new Vuex.Store({
       state.robotState = params.robotState
       state.destination = params.destination
     },
+    initInitialState (state) {
+      state.isInitialStateCalled = false
+    },
+    calledInitialState (state) {
+      state.isInitialStateCalled = true
+    }
   },
   actions: {
+    initAction ({commit}) {
+      commit('initInitialState')
+    },
     saveAction ({commit}, params) {
       commit('updateConfig', params)
       commit('save')
@@ -73,6 +83,7 @@ export default new Vuex.Store({
       getRobotState(state.restEndpoint, state.restPrefix, state.restToken, state.robotId).then(res => {
         if (res.result == 'success') {
           commit('updateRobotState', {robotState: res.data.state, destination: res.data.destination})
+          commit('calledInitialState')
         }
         else {
           commit('updateMessage', {message: 'error when retrieving robot state', variant: 'danger'})
@@ -89,7 +100,9 @@ export default new Vuex.Store({
           commit('updateRobotState', {robotState: message.send_state.state, destination: message.send_state.destination})
           mqttClient.publishCmdexe(cmdexeTopic, message)
         })
-        dispatch('getInitialStateAction')
+        if (!state.isInitialStateCalled) {
+          dispatch('getInitialStateAction')
+        }
         cb()
       })
     },

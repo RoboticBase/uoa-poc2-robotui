@@ -98,9 +98,10 @@ export default {
     this.params.robotId = this.$store.state.robotId
     this.params.uiId = this.$store.state.uiId
     this.params.modelSelected = this.$store.state.modelSelected
+    this.initAction()
   },
   methods: {
-    ...mapActions(['saveAction', 'connectAction']),
+    ...mapActions(['initAction', 'saveAction', 'connectAction']),
     connect () {
       if (this.processing) return
       this.processing = true
