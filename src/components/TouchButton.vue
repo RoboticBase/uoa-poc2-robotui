@@ -6,9 +6,6 @@
         {{ buttonText }}
       </button>
     </div>
-    <audio id="click_se" preload="auto" ref="click_se">
-      <source src="/static/sounds/se_maoudamashii_system38.mp3" type="audio/mp3"/>
-    </audio>
   </div>
 </template>
 
@@ -34,12 +31,6 @@ export default {
       if (this.processing) return
       this.processing = true
       this.buttonDisabled = true
-      let click_se = this.$refs.click_se
-      if (typeof(click_se.currentTime) != 'undefined') {
-        click_se.currentTime = 0
-      }
-      click_se.play()
-
       this.$emit('clickEvent', () => {
         this.processing = false
         this.buttonDisabled = false
