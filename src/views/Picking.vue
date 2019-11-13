@@ -6,11 +6,11 @@
     </div>
     <hr/>
     <div>
-      <h3>商品の積み込みが完了したら、積込完了ボタンを押してください</h3>
+      <h3>商品の積み下ろしが完了したら、作業完了ボタンを押してください</h3>
       <div class="row">
         <div class="col-sm-12">
           <TouchButton
-            buttonText="積込完了" height="400px" fontSize="200px" :buttonDisabled="false"
+            buttonText="作業完了" height="400px" fontSize="200px" :buttonDisabled="false"
             v-on:clickEvent="moveNextAction"/>
         </div>
       </div>
@@ -34,7 +34,7 @@ export default {
     ...mapState(['destination'])
   },
   mounted: function () {
-    const utterance = this.destination + 'に到着しました。指定された品物を積み込んでください。'
+    const utterance = this.destination + 'に到着しました。指定された品物の積み下ろしをしてください。'
     speak(utterance)
   },
   methods: {
