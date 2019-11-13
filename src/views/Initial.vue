@@ -47,7 +47,12 @@
 
     <div class="row form-group">
       <div class="col-sm-12">
-        <button class="btn btn-primary float-center" @click="connect">接続</button>
+        <div v-if="processing">
+          <mark>接続処理中</mark>
+        </div>
+        <div v-else>
+          <button class="btn btn-primary float-center" @click="connect">接続</button>
+        </div>
       </div>
     </div>
   </div>
@@ -61,7 +66,8 @@ export default {
   name: 'Initial',
   data () {
     return {
-      params: {}
+      params: {},
+      processing: false,
     }
   },
   beforeMount () {
@@ -74,13 +80,18 @@ export default {
     this.params.robotType = this.$store.state.robotType
     this.params.robotId = this.$store.state.robotId
     this.params.uiId = this.$store.state.uiId
+    this.initAction()
   },
   methods: {
-    ...mapActions(['saveAction', 'connectAction']),
+    ...mapActions(['initAction', 'saveAction', 'connectAction']),
     connect () {
+      if (this.processing) return
+      this.processing = true
       this.saveAction(this.params)
       speak('hack', 0) // iOSは一度ユーザーアクションで発話させておかないと、自動発話させることができない
-      this.connectAction()
+      this.connectAction(() => {
+        this.processing = false
+      })
     },
   },
 }

@@ -20,7 +20,8 @@ export default new Vuex.Store({
     message: '',
     variant: '',
     destination: '',
-    mqttClient: null
+    mqttClient: null,
+    isInitialStateCalled: false
   },
   mutations: {
     updateMessage(state, params) {
@@ -61,8 +62,17 @@ export default new Vuex.Store({
       state.robotState = params.robotState
       state.destination = params.destination
     },
+    initInitialState (state) {
+      state.isInitialStateCalled = false
+    },
+    calledInitialState (state) {
+      state.isInitialStateCalled = true
+    }
   },
   actions: {
+    initAction ({commit}) {
+      commit('initInitialState')
+    },
     saveAction ({commit}, params) {
       commit('updateConfig', params)
       commit('save')
@@ -71,23 +81,27 @@ export default new Vuex.Store({
       getRobotState(state.restEndpoint, state.restPrefix, state.restToken, state.robotId).then(res => {
         if (res.result == 'success') {
           commit('updateRobotState', {robotState: res.data.state, destination: res.data.destination})
+          commit('calledInitialState')
         }
         else {
           commit('updateMessage', {message: 'error when retrieving robot state', variant: 'danger'})
         }
       })
     },
-    connectAction ({commit, dispatch, state}) {
+    connectAction ({commit, dispatch, state}, cb) {
       const cmdTopic = '/' + state.robotType + '/' + state.uiId + '/cmd'
       const cmdexeTopic = '/' + state.robotType + '/' + state.uiId + '/cmdexe'
       const mqttClient = new Mqtt(state.mqttEndpoint, state.mqttUsername, state.mqttPassword)
       commit('setMQTTClient', mqttClient)
       mqttClient.connect(() => {
-        mqttClient.subscribeCmd(cmdTopic, (message) => {
-          commit('updateRobotState', {robotState: message.send_state.state, destination: message.send_state.destination})
-          mqttClient.publishCmdexe(cmdexeTopic, message)
-        })
-        dispatch('getInitialStateAction')
+        if (!state.isInitialStateCalled) {
+          mqttClient.subscribeCmd(cmdTopic, (message) => {
+            commit('updateRobotState', {robotState: message.send_state.state, destination: message.send_state.destination})
+            mqttClient.publishCmdexe(cmdexeTopic, message)
+          })
+          dispatch('getInitialStateAction')
+        }
+        cb()
       })
     },
     disconnectAction ({commit, state}) {
@@ -96,13 +110,14 @@ export default new Vuex.Store({
         commit('updateRobotState', {robotState: 'initial'})
       }
     },
-    moveNextAction ({commit, state}) {
+    moveNextAction ({commit, state}, cb) {
       commit('updateMessage', {message: '通信中', variant: 'info'})
       patchMoveNext(state.restEndpoint, state.restPrefix, state.restToken, state.robotId).then(res => {
         if (res.result != 'success') {
           const variant = res.result == 'warning' ? 'warning' : 'danger'
           commit('updateMessage', {message: res.message, variant: variant})
         }
+        cb()
       })
     },
   },
