@@ -45,19 +45,6 @@
     </div>
     <hr/>
 
-    <div class="form-group">
-      <b-form-group label="対象業務">
-        <b-form-radio-group
-          id="btn-radios"
-          v-model="params.modelSelected"
-          :options="options"
-          buttons
-          name="radios-btn-default"
-        ></b-form-radio-group>
-      </b-form-group>
-    </div>
-    <hr/>
-
     <div class="row form-group">
       <div class="col-sm-12">
         <div v-if="processing">
@@ -80,10 +67,6 @@ export default {
   data () {
     return {
       params: {},
-      options: [
-        { text: '注文配送', value: 'order' },
-        { text: '倉庫間移動', value: 'warehouse' }
-      ],
       processing: false,
     }
   },
@@ -97,7 +80,6 @@ export default {
     this.params.robotType = this.$store.state.robotType
     this.params.robotId = this.$store.state.robotId
     this.params.uiId = this.$store.state.uiId
-    this.params.modelSelected = this.$store.state.modelSelected
     this.initAction()
   },
   methods: {

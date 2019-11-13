@@ -21,7 +21,6 @@ export default new Vuex.Store({
     variant: '',
     destination: '',
     mqttClient: null,
-    modelSelected: 'order',
     isInitialStateCalled: false
   },
   mutations: {
@@ -39,7 +38,6 @@ export default new Vuex.Store({
       state.robotType = params.robotType
       state.robotId = params.robotId
       state.uiId = params.uiId
-      state.modelSelected = params.modelSelected
     },
     save (state) {
       localStorage.setItem('store', JSON.stringify(state))
@@ -96,11 +94,11 @@ export default new Vuex.Store({
       const mqttClient = new Mqtt(state.mqttEndpoint, state.mqttUsername, state.mqttPassword)
       commit('setMQTTClient', mqttClient)
       mqttClient.connect(() => {
-        mqttClient.subscribeCmd(cmdTopic, (message) => {
-          commit('updateRobotState', {robotState: message.send_state.state, destination: message.send_state.destination})
-          mqttClient.publishCmdexe(cmdexeTopic, message)
-        })
         if (!state.isInitialStateCalled) {
+          mqttClient.subscribeCmd(cmdTopic, (message) => {
+            commit('updateRobotState', {robotState: message.send_state.state, destination: message.send_state.destination})
+            mqttClient.publishCmdexe(cmdexeTopic, message)
+          })
           dispatch('getInitialStateAction')
         }
         cb()
