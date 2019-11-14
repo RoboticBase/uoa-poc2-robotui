@@ -21,7 +21,9 @@ export default new Vuex.Store({
     variant: '',
     destination: '',
     mqttClient: null,
-    isInitialStateCalled: false
+    isInitialStateCalled: false,
+    lockMessage: null,
+    lockUtterance: ''
   },
   mutations: {
     updateMessage(state, params) {
@@ -67,6 +69,10 @@ export default new Vuex.Store({
     },
     calledInitialState (state) {
       state.isInitialStateCalled = true
+    },
+    updateLockState (state, params) {
+      state.lockMessage = params.lockMessage
+      state.lockUtterance = params.lockUtterance
     }
   },
   actions: {
@@ -97,7 +103,23 @@ export default new Vuex.Store({
         if (!state.isInitialStateCalled) {
           mqttClient.subscribeCmd(cmdTopic, (message) => {
             commit('updateRobotState', {robotState: message.send_state.state, destination: message.send_state.destination})
-            mqttClient.publishCmdexe(cmdexeTopic, message)
+            mqttClient.publishStateCmdexe(cmdexeTopic, message)
+          }, (message) => {
+            if (message.send_token_info.mode === 'suspend') {
+              commit('updateLockState', {
+                lockMessage: {
+                  msg: '一時待機',
+                  description: message.send_token_info.lock_owner_id + 'が作業中のため'
+                },
+                lockUtterance: '他のロボットが作業中のため、一時待機します。'
+              })
+            } else if (message.send_token_info.mode === 'resume') {
+              commit('updateLockState', {
+                lockMessage: null,
+                lockUtterance: '他のロボットの作業が完了しました。移動を再開します。'
+              })
+            }
+            mqttClient.publishTokenInfoCmdexe(cmdexeTopic, message)
           })
           dispatch('getInitialStateAction')
         }
