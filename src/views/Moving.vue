@@ -2,17 +2,16 @@
   <div class="moving">
     <Header/>
     <div class="display">
-      <span class="display-1">移動中</span>
+      <span class="display-1" v-if="lockMessage">一時待機</span>
+      <span class="display-1" v-else>移動中</span>
     </div>
     <div class="destination">
       <span class="display-4">移動先：{{ destination }}</span>
     </div>
-    <div class="lock" v-if="lockMessage">
+    <div class="lockMessage" v-if="lockMessage">
       <br/>
       <hr/>
-      <span class="display-4">{{ lockMessage.msg }}</span>
-      <br/>
-      <span class="display-4">({{ lockMessage.description }})</span>
+      <span class="display-4">{{ lockMessage }}</span>
     </div>
   </div>
 </template>

@@ -107,10 +107,7 @@ export default new Vuex.Store({
           }, (message) => {
             if (message.send_token_info.mode === 'suspend') {
               commit('updateLockState', {
-                lockMessage: {
-                  msg: '一時待機',
-                  description: message.send_token_info.lock_owner_id + 'が作業中のため'
-                },
+                lockMessage: message.send_token_info.lock_owner_id + 'が作業中のため',
                 lockUtterance: '他のロボットが作業中のため、一時待機します。'
               })
             } else if (message.send_token_info.mode === 'resume') {
