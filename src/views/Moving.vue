@@ -23,6 +23,11 @@ import speak from '@/speak'
 
 export default {
   name: 'moving',
+  data: function () {
+    return {
+      unsubscribe: null
+    }
+  },
   components: {
     Header,
   },
@@ -30,13 +35,19 @@ export default {
     ...mapState(['destination', 'lockMessage'])
   },
   mounted: function () {
-    this.$store.subscribe((mutation, state) => {
+    this.unsubscribe = this.$store.subscribe((mutation, state) => {
       if (mutation.type === 'updateLockState') {
         speak(state.lockUtterance)
       }
     })
     const utterance = this.destination + 'へ移動します。'
     speak(utterance)
+  },
+  destroyed: function () {
+    if (this.unsubscribe) {
+      this.unsubscribe()
+      this.unsubscribe = null
+    }
   },
 }
 </script>
