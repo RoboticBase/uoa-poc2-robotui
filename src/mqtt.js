@@ -24,7 +24,7 @@ export default class {
     })
   }
   subscribeCmd (mqttTopic, recvStateCB, recvTokenInfoCB) {
-    this.client.subscribe(mqttTopic)
+    this.client.subscribe(mqttTopic, {qos: 1})
     this.client.on('message', (topic, message) => {
       console.log('a message is notified, topic=' + topic + ', message=' + message.toString())
       if (mqttTopic == topic) {
@@ -48,7 +48,7 @@ export default class {
         errors: []
       }
     }
-    this.client.publish(mqttTopic, JSON.stringify(payload))
+    this.client.publish(mqttTopic, JSON.stringify(payload), {qos: 1})
   }
   publishTokenInfoCmdexe (mqttTopic, receivedMessage) {
     let payload = {
@@ -63,7 +63,7 @@ export default class {
         errors: []
       }
     }
-    this.client.publish(mqttTopic, JSON.stringify(payload))
+    this.client.publish(mqttTopic, JSON.stringify(payload), {qos: 1})
   }
   disconnect () {
     if (!this.client.connected) return false

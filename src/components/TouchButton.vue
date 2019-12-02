@@ -33,7 +33,7 @@ export default {
       this.buttonDisabled = true
       this.$emit('clickEvent', () => {
         this.processing = false
-        this.buttonDisabled = false
+//        this.buttonDisabled = false
       })
     },
   },
