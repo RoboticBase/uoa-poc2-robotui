@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import TouchButton from '@/components/TouchButton.vue'
 
-import { localVue, before, after } from '../vueCommon.js'
+import { localVue, before, after } from '@/../tests/vueCommon.js'
 
 beforeAll(before(jest))
 afterAll(after())

@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
 import QRReader from '@/components/QRReader.vue'
 
-import { localVue, before, after } from '../vueCommon.js'
+import { localVue, before, after } from '@/../tests/vueCommon.js'
 
 beforeAll(before(jest))
 afterAll(after())

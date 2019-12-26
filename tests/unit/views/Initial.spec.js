@@ -1,7 +1,7 @@
 import { shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex'
 import Initial from '@/views/Initial.vue'
-import { localVue, before, after } from '../vueCommon.js'
+import { localVue, before, after } from '@/../tests/vueCommon.js'
 
 beforeAll(before(jest))
 afterAll(after())

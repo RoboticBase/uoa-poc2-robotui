@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Home from '@/views/Home.vue'
-import { localVue, before, after } from '../vueCommon.js'
+import { localVue, before, after } from '@/../tests/vueCommon.js'
 
 beforeAll(before(jest))
 afterAll(after())
