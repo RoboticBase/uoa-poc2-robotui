@@ -1,11 +1,10 @@
-import { mount, createLocalVue } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import Vuex from 'vuex'
-import BootstrapVue from 'bootstrap-vue'
 import Picking from '@/views/Picking.vue'
+import { localVue, before, after } from '../vueCommon.js'
 
-const localVue = createLocalVue()
-localVue.use(Vuex)
-localVue.use(BootstrapVue)
+beforeAll(before(jest))
+afterAll(after())
 
 describe('Picking.vue', () => {
   let actions = null
@@ -42,9 +41,6 @@ describe('Picking.vue', () => {
   })
 
   it('invokes moveNextAction when the touthButton is clicked', async () => {
-    const originalError = console.error
-    console.error = jest.fn()
-
     state.destination = 'wh2'
 
     const wrapper = mount(Picking, {store, localVue})
@@ -67,14 +63,9 @@ describe('Picking.vue', () => {
 
     actions.moveNextAction.mock.calls[0][1]()
     expect(wrapper.find({name: 'touchButton'}).vm.$data.processing).toBeFalsy()
-
-    console.error = originalError
   })
 
   it('invokes moveNextAction but does nothing when touchButton is processing', async () => {
-    const originalError = console.error
-    console.error = jest.fn()
-
     state.destination = 'wh3'
 
     const wrapper = mount(Picking, {store, localVue})
@@ -93,8 +84,6 @@ describe('Picking.vue', () => {
     expect(speechSynthesis.speak).toHaveBeenCalledTimes(1)
     expect(speechSynthesis.speak.mock.calls[0][0].text).toMatch('wh3に到着しました。指定された品物の積み下ろしをしてください。')
     expect(speechSynthesis.speak.mock.calls[0][0].volume).toEqual(1)
-
-    console.error = originalError
   })
 
 })

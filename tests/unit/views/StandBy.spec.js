@@ -1,11 +1,10 @@
-import { mount, createLocalVue } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import Vuex from 'vuex'
-import BootstrapVue from 'bootstrap-vue'
 import StandBy from '@/views/StandBy.vue'
+import { localVue, before, after } from '../vueCommon.js'
 
-const localVue = createLocalVue()
-localVue.use(Vuex)
-localVue.use(BootstrapVue)
+beforeAll(before(jest))
+afterAll(after())
 
 describe('Standby.vue', () => {
 

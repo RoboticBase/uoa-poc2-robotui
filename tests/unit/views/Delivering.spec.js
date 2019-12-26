@@ -1,11 +1,10 @@
-import { mount, createLocalVue } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import Vuex from 'vuex'
-import BootstrapVue from 'bootstrap-vue'
 import Delivering from '@/views/Delivering.vue'
+import { localVue, before, after } from '../vueCommon.js'
 
-const localVue = createLocalVue()
-localVue.use(Vuex)
-localVue.use(BootstrapVue)
+beforeAll(before(jest))
+afterAll(after())
 
 describe('Delivering.vue', () => {
   let actions = null
@@ -174,9 +173,6 @@ describe('Delivering.vue', () => {
   })
 
   it('invokes moveNextAction but does nothing when touchButton is processing', async () => {
-    const originalError = console.error
-    console.error = jest.fn()
-
     state.destination = 'dest4'
 
     const wrapper = mount(Delivering, {store, localVue})
@@ -199,8 +195,6 @@ describe('Delivering.vue', () => {
 
     expect(actions.moveNextAction).not.toHaveBeenCalled()
     expect(touchButton.$data.processing).toBeTruthy()
-
-    console.error = originalError
   })
 
 })

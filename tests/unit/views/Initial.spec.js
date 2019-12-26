@@ -1,9 +1,10 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils'
+import { shallowMount } from '@vue/test-utils'
 import Vuex from 'vuex'
 import Initial from '@/views/Initial.vue'
+import { localVue, before, after } from '../vueCommon.js'
 
-const localVue = createLocalVue()
-localVue.use(Vuex)
+beforeAll(before(jest))
+afterAll(after())
 
 describe('Initial.vue', () => {
   let actions = null
