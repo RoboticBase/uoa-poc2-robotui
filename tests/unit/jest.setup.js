@@ -4,3 +4,6 @@ speechSynthesis = {
   speak: jest.fn(),
 }
 SpeechSynthesisUtterance = jest.fn()
+navigator.mediaDevices = {
+  getUserMedia: jest.fn().mockResolvedValue(null)
+}

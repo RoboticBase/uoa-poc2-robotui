@@ -4,6 +4,7 @@ module.exports = {
   globals: {
     speechSynthesis: null,
     SpeechSynthesisUtterance: null,
+    navigator: null,
   },
   collectCoverage: true
 }
