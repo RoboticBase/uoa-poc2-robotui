@@ -32,11 +32,16 @@ export default class {
       // eslint-disable-next-line
       console.log('a message is notified, topic=' + topic + ', message=' + message.toString())
       if (mqttTopic == topic) {
-        let payload = JSON.parse(message.toString())
-        if ('send_state' in payload) {
-          recvStateCB(payload)
-        } else if ('send_token_info' in payload) {
-          recvTokenInfoCB(payload)
+        try {
+          let payload = JSON.parse(message.toString())
+          if ('send_state' in payload) {
+            recvStateCB(payload)
+          } else if ('send_token_info' in payload) {
+            recvTokenInfoCB(payload)
+          }
+        } catch (err) {
+          // eslint-disable-next-line
+          console.error('message payload parse error ', err)
         }
       }
     })
