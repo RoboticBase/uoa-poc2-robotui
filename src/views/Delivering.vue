@@ -51,6 +51,7 @@ export default {
   methods: {
     ...mapActions(['moveNextAction']),
     qrCodeDetected (code) {
+      // eslint-disable-next-line
       console.log('detect QR code', code)
       const utterance = 'お客様を認識しました。品物をお受け取りください。品物を受け取ったら、受け取りボタンを押してください。'
       speak(utterance)

@@ -13,26 +13,35 @@ export default class {
       password: this.mqttPassword,
     })
     this.client.on('connect', (result) => {
+      // eslint-disable-next-line
       console.log('connected to MQTT over WebSocket, host=' + this.mqttEndpoint + ', result=' +  result.returnCode)
       cb()
     })
     this.client.on('close', () => {
+      // eslint-disable-next-line
       console.log('close connection, host=' + this.mqttEndpoint)
     })
     this.client.on('end', () => {
+      // eslint-disable-next-line
       console.log('end connection, host=' + this.mqttEndpoint)
     })
   }
   subscribeCmd (mqttTopic, recvStateCB, recvTokenInfoCB) {
     this.client.subscribe(mqttTopic, {qos: 1})
     this.client.on('message', (topic, message) => {
+      // eslint-disable-next-line
       console.log('a message is notified, topic=' + topic + ', message=' + message.toString())
       if (mqttTopic == topic) {
-        let payload = JSON.parse(message.toString())
-        if ('send_state' in payload) {
-          recvStateCB(payload)
-        } else if ('send_token_info' in payload) {
-          recvTokenInfoCB(payload)
+        try {
+          let payload = JSON.parse(message.toString())
+          if ('send_state' in payload) {
+            recvStateCB(payload)
+          } else if ('send_token_info' in payload) {
+            recvTokenInfoCB(payload)
+          }
+        } catch (err) {
+          // eslint-disable-next-line
+          console.error('message payload parse error ', err)
         }
       }
     })

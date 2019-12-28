@@ -73,7 +73,26 @@ export default new Vuex.Store({
     updateLockState (state, params) {
       state.lockMessage = params.lockMessage
       state.lockUtterance = params.lockUtterance
-    }
+    },
+    clear (state) {
+      state.robotState = 'initial'
+      state.restEndpoint = ''
+      state.restToken = ''
+      state.restPrefix = '/controller'
+      state.mqttEndpoint = ''
+      state.mqttUsername = ''
+      state.mqttPassword = ''
+      state.robotType = 'robot_ui'
+      state.robotId = ''
+      state.uiId = ''
+      state.message = ''
+      state.variant = ''
+      state.destination = ''
+      state.mqttClient = null
+      state.isInitialStateCalled = false
+      state.lockMessage = null
+      state.lockUtterance = ''
+    },
   },
   actions: {
     initAction ({commit}) {

@@ -6,8 +6,6 @@
 </template>
 
 <script>
-import jsQR from "jsqr"
-
 export default {
   name: 'qrreader',
   props: ['width', 'height'],
@@ -31,26 +29,7 @@ export default {
     }).catch(printerr)
 
     video.srcObject = stream
-    video.onloadedmetadata = () => {
-      video.play()
-      this.timer = setInterval(() => {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-        const code = jsQR(imageData.data, imageData.width, imageData.height)
-        if (code) {
-          drawLine(ctx, code.location)
-          canvas.style.display = 'block'
-          video.style.display = 'none'
-          video.pause()
-
-          this.$emit('qrCodeDetectEvent', code)
-          if (this.timer) {
-            clearInterval(this.timer)
-            this.timer = null
-          }
-        }
-      }, 500)
-    }
+    video.onloadedmetadata = this.onloadedmetadata(video, canvas, ctx)
   },
   beforeDestroy: function () {
     if (this.timer) {
@@ -58,6 +37,31 @@ export default {
       this.timer = null
     }
   },
+  methods: {
+    onloadedmetadata: function (video, canvas, ctx) {
+      const jsQR = require('jsqr')
+      return () => {
+        video.play()
+        this.timer = setInterval(() => {
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+          const code = jsQR(imageData.data, imageData.width, imageData.height)
+          if (code) {
+            drawLine(ctx, code.location)
+            canvas.style.display = 'block'
+            video.style.display = 'none'
+            video.pause()
+
+            this.$emit('qrCodeDetectEvent', code)
+            if (this.timer) {
+              clearInterval(this.timer)
+              this.timer = null
+            }
+          }
+        }, 500)
+      }
+    },
+  }
 }
 
 function drawLine (ctx, pos, options={color:"blue", size:5}) {
